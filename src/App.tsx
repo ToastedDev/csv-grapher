@@ -14,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Chart } from "./components/ui/chart";
 
 type FileData = {
   fileName: string;
@@ -111,7 +112,7 @@ export default function FileUploader() {
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <Card className="w-full max-w-2xl mx-auto">
+      <Card className="w-full max-w-4xl mx-auto">
         <CardHeader>
           <CardTitle>CSV/TSV Grapher</CardTitle>
           <CardDescription>
@@ -188,46 +189,19 @@ export default function FileUploader() {
                 </Button>
               </div>
 
-              <div className="border rounded-lg overflow-auto max-h-60">
-                <table className="w-full text-sm">
-                  <thead className="bg-muted/50 sticky top-0">
-                    <tr>
-                      {fileData.content[0]?.map((header, i) => (
-                        <th
-                          key={i}
-                          className="px-4 py-2 text-left font-medium text-muted-foreground"
-                        >
-                          {header || `Column ${i + 1}`}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {fileData.content.slice(1, 6).map((row, i) => (
-                      <tr key={i} className="border-t">
-                        {row.map((cell, j) => (
-                          <td
-                            key={j}
-                            className="px-4 py-2 truncate max-w-[200px]"
-                          >
-                            {cell}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                    {fileData.content.length > 6 && (
-                      <tr className="border-t">
-                        <td
-                          colSpan={fileData.content[0]?.length || 1}
-                          className="px-4 py-2 text-center text-muted-foreground"
-                        >
-                          {fileData.content.length - 6} more rows
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
+              <Chart
+                series={[
+                  {
+                    name: fileData.content[0][0],
+                    data: fileData.content
+                      .slice(1)
+                      .map((row) => [
+                        new Date(row[0]).getTime(),
+                        parseInt(row[1]),
+                      ]),
+                  },
+                ]}
+              />
             </div>
           )}
 
