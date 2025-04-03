@@ -22,6 +22,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ModeToggle } from "./components/mode-toggle";
+import { cn } from "./lib/utils";
 
 type FileData = {
   fileName: string;
@@ -122,20 +124,24 @@ export default function FileUploader() {
   return (
     <div className="container mx-auto py-8 px-4">
       <Card className="w-full max-w-4xl mx-auto">
-        <CardHeader>
-          <CardTitle>CSV/TSV Grapher</CardTitle>
-          <CardDescription>
-            View a CSV or TSV file as a line graph.
-          </CardDescription>
+        <CardHeader className="flex items-center justify-between">
+          <div className="flex flex-col gap-1.5">
+            <CardTitle>CSV/TSV Grapher</CardTitle>
+            <CardDescription>
+              View a CSV or TSV file as a line graph.
+            </CardDescription>
+          </div>
+          <ModeToggle />
         </CardHeader>
         <CardContent>
           {!fileData ? (
             <div
-              className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors cursor-pointer ${
+              className={cn(
+                "border-2 border-dashed rounded-lg p-12 text-center transition-colors cursor-pointer",
                 isDragging
                   ? "border-primary bg-primary/5"
                   : "border-muted-foreground/25 hover:border-primary/50"
-              }`}
+              )}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
@@ -174,8 +180,8 @@ export default function FileUploader() {
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg">
-                <div className="p-2 bg-primary/10 rounded-full">
+              <div className="flex items-center gap-3 p-4 bg-transparent dark:bg-input/30 rounded-lg border">
+                <div className="p-2 bg-primary/5 dark:bg-primary/10 rounded-full">
                   <FileText className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -190,7 +196,7 @@ export default function FileUploader() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 rounded-full"
+                  className="h-8 w-8 rounded-full hover:!bg-foreground/10"
                   onClick={resetFile}
                   title="Upload another file"
                 >

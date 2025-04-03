@@ -58,14 +58,14 @@ const colors = [
 export function Chart({
   series,
   includeTime = false,
-  showLegend = true,
+  showLegend = false,
 }: {
   series: Partial<Highcharts.SeriesOptionsType>[];
   includeTime?: boolean;
   showLegend?: boolean;
 }) {
   return (
-    <div className="rounded-xl border border-border/40 bg-background/50 p-4 backdrop-blur transition-all">
+    <div className="rounded-xl border bg-transparent dark:bg-input/30 p-4 backdrop-blur transition-all">
       <HighchartsReact
         highcharts={Highcharts}
         options={
@@ -130,11 +130,15 @@ export function Chart({
                   fontSize: "12px",
                 },
               },
-              gridLineColor: "rgba(255,255,255,0.05)",
-              lineColor: "rgba(255,255,255,0.1)",
-              tickColor: "rgba(255,255,255,0.1)",
+              gridLineColor:
+                "color-mix(in oklab, var(--foreground) 5%, transparent)",
+              lineColor:
+                "color-mix(in oklab, var(--foreground) 10%, transparent)",
+              tickColor:
+                "color-mix(in oklab, var(--foreground) 10%, transparent)",
               crosshair: {
-                color: "hsl(var(--foreground) / 0.1)",
+                color:
+                  "color-mix(in oklab, var(--foreground) 10%, transparent)",
                 dashStyle: "Solid",
               },
             },
@@ -144,15 +148,17 @@ export function Chart({
               },
               labels: {
                 style: {
-                  color: "hsl(var(--foreground))",
+                  color: "var(--foreground)",
                   fontSize: "12px",
                 },
                 formatter: function (this: any): any {
                   return abbreviate(this.value);
                 },
               },
-              gridLineColor: "rgba(255,255,255,0.05)",
-              lineColor: "rgba(255,255,255,0.1)",
+              gridLineColor:
+                "color-mix(in oklab, var(--foreground) 5%, transparent)",
+              lineColor:
+                "color-mix(in oklab, var(--foreground) 10%, transparent)",
             },
             credits: {
               enabled: false,
