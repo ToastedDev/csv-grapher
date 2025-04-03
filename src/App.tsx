@@ -15,6 +15,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Chart } from "./components/ui/chart";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type FileData = {
   fileName: string;
@@ -26,6 +33,7 @@ export default function FileUploader() {
   const [fileData, setFileData] = useState<FileData | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [currentHeader, setCurrentHeader] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const processFile = useCallback((file: File) => {
@@ -49,6 +57,7 @@ export default function FileUploader() {
           .split("\n")
           .map((row) => row.split(delimiter).map((cell) => cell.trim()));
 
+        setCurrentHeader(rows[0][1]);
         setFileData({
           fileName: file.name,
           content: rows,
@@ -189,15 +198,30 @@ export default function FileUploader() {
                 </Button>
               </div>
 
+              <Select value={currentHeader} onValueChange={setCurrentHeader}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Header" />
+                </SelectTrigger>
+                <SelectContent>
+                  {fileData.content[0].slice(1).map((header) => (
+                    <SelectItem key={header} value={header}>
+                      {header}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
               <Chart
                 series={[
                   {
-                    name: fileData.content[0][0],
+                    name: currentHeader,
                     data: fileData.content
                       .slice(1)
                       .map((row) => [
                         new Date(row[0]).getTime(),
-                        parseInt(row[1]),
+                        parseInt(
+                          row[fileData.content[0].indexOf(currentHeader)]
+                        ),
                       ]),
                   },
                 ]}
