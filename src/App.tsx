@@ -1,4 +1,10 @@
-import { useState, useRef, type DragEvent, type ChangeEvent } from "react";
+import {
+  useState,
+  useRef,
+  type DragEvent,
+  type ChangeEvent,
+  useCallback,
+} from "react";
 import { FileText, Upload, AlertCircle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,33 +27,7 @@ export default function FileUploader() {
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setIsDragging(false);
-
-    const files = e.dataTransfer.files;
-    if (files.length) {
-      processFile(files[0]);
-    }
-  };
-
-  const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      processFile(e.target.files[0]);
-    }
-  };
-
-  const processFile = (file: File) => {
+  const processFile = useCallback((file: File) => {
     setError(null);
 
     // Check if file is CSV or TSV
@@ -83,19 +63,51 @@ export default function FileUploader() {
     };
 
     reader.readAsText(file);
-  };
+  }, []);
 
-  const handleButtonClick = () => {
+  const handleDragOver = useCallback((e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+  }, []);
+
+  const handleDrop = useCallback(
+    (e: DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      setIsDragging(false);
+
+      const files = e.dataTransfer.files;
+      if (files.length) {
+        processFile(files[0]);
+      }
+    },
+    [processFile]
+  );
+
+  const handleFileSelect = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files && e.target.files.length > 0) {
+        processFile(e.target.files[0]);
+      }
+    },
+    [processFile]
+  );
+
+  const handleButtonClick = useCallback(() => {
     fileInputRef.current?.click();
-  };
+  }, [fileInputRef]);
 
-  const resetFile = () => {
+  const resetFile = useCallback(() => {
     setFileData(null);
     setError(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
-  };
+  }, [fileInputRef]);
 
   return (
     <div className="container mx-auto py-8 px-4">
