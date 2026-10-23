@@ -244,6 +244,7 @@ export function Chart({
                   marker: {
                     fillColor: `rgb(${colors[index]?.join(",")})`,
                   },
+                  connectNulls: true,
                 } satisfies Highcharts.SeriesOptionsType,
                 series
               )
