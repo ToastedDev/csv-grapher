@@ -31,6 +31,10 @@ type FileData = {
   type: "csv" | "tsv";
 };
 
+// A date-only value like "2026-10-23" has no colon, so any time-like
+// `HH:mm` segment means the dataset carries a time of day.
+const hasTimeComponent = (value: string) => /\d{1,2}:\d{2}/.test(value);
+
 export default function FileUploader() {
   const [fileData, setFileData] = useState<FileData | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -120,6 +124,12 @@ export default function FileUploader() {
       fileInputRef.current.value = "";
     }
   }, [fileInputRef]);
+
+  const includeTime = Boolean(
+    fileData?.content
+      .slice(1)
+      .some((row) => row[0] && hasTimeComponent(row[0]))
+  );
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -218,6 +228,7 @@ export default function FileUploader() {
               </Select>
 
               <Chart
+                includeTime={includeTime}
                 series={[
                   {
                     name: currentHeader,

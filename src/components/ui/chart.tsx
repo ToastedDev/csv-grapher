@@ -124,7 +124,6 @@ export function Chart({
             xAxis: {
               type: "datetime",
               labels: {
-                format: "{value:%b %d, %Y}",
                 style: {
                   color: "var(--foreground)",
                   fontSize: "12px",
